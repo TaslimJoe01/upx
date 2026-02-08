@@ -26,6 +26,10 @@ jobs:
       run: |
         rm -rf .git
 
+    - name: Patch Stubs
+      run: |
+        python3 patch_stubs.py .
+
     - name: Build UPX (Release)
       run: |
         make release
