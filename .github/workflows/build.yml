@@ -1,0 +1,44 @@
+name: Build Modified UPX
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-linux-amd64:
+    runs-on: ubuntu-22.04
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential g++ cmake libucl-dev zlib1g-dev
+
+    - name: Build UPX (Release)
+      run: |
+        make release
+
+    - name: Strip binary
+      run: |
+        strip --strip-all build/release/upx
+        mv build/release/upx upx-mod
+
+    - name: Test build
+      run: |
+        ./upx-mod --version
+        ./upx-mod --help | head -20
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: upx-mod-linux-amd64
+        path: upx-mod
+        retention-days: 30
