@@ -22,6 +22,10 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y build-essential g++ cmake libucl-dev zlib1g-dev
 
+    - name: Remove git
+      run: |
+        rm -rf .git
+
     - name: Build UPX (Release)
       run: |
         make release
